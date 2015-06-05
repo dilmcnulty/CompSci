@@ -31,7 +31,7 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
 {
   private Image background,rock;
   public static PhysicsObject link;
-  private Timer t,enemyTimer;
+  public Timer t,enemyTimer;
   private boolean editing,paused;
   public static ArrayList<Obstacle> obstacleList;
   public static ArrayList<Enemy> enemyList;
@@ -50,15 +50,17 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
     link = new PhysicsObject(250,250,0,0);
     t = new Timer(25,this);
     t.start();
+    mapE.setBounds(10,10,84,20);
     editing = false;
     obstacleList = new ArrayList<Obstacle>();
     enemyList = new ArrayList<Enemy>();
-    enemyTimer = new Timer(5000,this);
+    enemyTimer = new Timer(2000,this);
     enemyTimer.start();
     playAgain = new Button("Play Again?");
     playAgain.setFont(new Font("Arial",1,25));
     playAgain.setVisible(false);
     playAgain.setBounds(300,265,150,75);
+    link.locked = false;
     this.p = p;
     super.add(playAgain);
     super.setFocusable(true);
@@ -71,7 +73,20 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
     g.drawImage(background,0,0,800,600,this);
     for (Obstacle o: obstacleList)
     {
-      g.drawImage(rock, o.getX(), o.getY(), o.getWidth(), o.getHeight(), this);
+        if (o.getWidth()<20 || o.getHeight()<20){
+            int draw = o.getHeight()/10;
+            if (draw == 0) draw = 1;
+            int drawW = o.getWidth()/10;
+            if (drawW == 0)draw = 1;
+            for (int i = 0; i<drawW; i++){
+                for (int k = 0; k < draw; k++){
+                    g.drawImage(rock,o.getX()+i*10,o.getY()+k*10,10,10,this);
+                }
+            }
+        }
+        else{
+            g.drawImage(rock,o.getX(),o.getY(),o.getWidth(),o.getHeight(),this);
+        }
     }
     for (Enemy e: enemyList)
     {
@@ -83,6 +98,8 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
       g.setColor(Color.BLACK);
       g.setFont(new Font("Monospaced",1,80));
       g.drawString("PAUSED.",250,325);
+      g.setFont(new Font("Monospaced",1,30));
+      g.drawString("Press ESC to resume.",232,360);
     }
     else{}
     if (gameOver){
@@ -105,15 +122,20 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
     Random rng = new Random();
     link.update();
         if (e.getSource() == enemyTimer){
+            System.out.println("enemy drawn");
       enemyList.add(new Enemy(250,300,5,0));
         }
     for (Enemy en: enemyList)
     {
       en.update();
     }
-    if (link.health == 0) gameOver = true;
+    if (link.health == 0){
+        gameOver = true;
+        t.stop();
+        enemyTimer.stop();
+    }
     if (e.getSource() == playAgain){
-        enemyList = new ArrayList<Enemy>();
+        gameOver = false;
         playAgain.setVisible(false);
         p.reset();
     }
@@ -139,6 +161,7 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
   {
     paused = true;
     link.locked = true;
+    enemyTimer.stop();
     for (Enemy e: enemyList)
     {
       e.savedH = (int)e.getHVelocity();
@@ -151,6 +174,7 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
   {
     paused = false;
     link.locked = false;
+    enemyTimer.start();
     for (Enemy e: enemyList)
     {
       e.setHVelocity(e.savedH);

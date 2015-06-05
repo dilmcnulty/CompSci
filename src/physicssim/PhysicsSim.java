@@ -14,12 +14,12 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.Timer;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -39,7 +39,6 @@ public class PhysicsSim extends JPanel implements ActionListener
 {
   // Declare instance variables here...
   private PhysicsObject test;
-  private Timer t;
   private Image background;
   public static int speed;
   public static MapForm map;
@@ -58,12 +57,9 @@ public class PhysicsSim extends JPanel implements ActionListener
     super.setPreferredSize(new Dimension(w, h));
     super.setBackground(new Color(225, 225, 225));
     super.setLayout(null);
-    t = new Timer(25,this);
-    t.start();
     speed = 7;
     mainMenu = new JMenu();
     mainMenu.setText("File  ");
-    
     background = Toolkit.getDefaultToolkit().getImage(PhysicsSim.class.getResource("background.png"));
     
     loadMap = new JMenuItem("Load Map...");
@@ -121,10 +117,22 @@ public class PhysicsSim extends JPanel implements ActionListener
     if (e.getSource() == saveMap) saveMap();
     if (e.getSource() == loadMap) loadMap();
     if (e.getSource() == start){
+        mapText = "";
         map = new MapForm(this);
         map.setBounds(0,0,super.getWidth(),super.getHeight());
         super.add(map);
-        mapText = "";
+        loadMap();
+        map.pauseGame();
+        /*try{
+            Scanner in = new Scanner(new FileReader("C:\\Users\\Kingdom Ent-Dave\\Documents\\NetBeansProjects\\PhysicsSim\\src\\physicssim\\map1.txt"));
+        }
+        catch (FileNotFoundException ex){
+            System.out.println("Error: File Not Found!");
+        }
+        while(in.hasNext()){
+            mapText+=in.next();
+        }
+        in.close();*/
         for (Obstacle o: obstacleList){
         mapText+=o.getX() + " ";
         mapText+=o.getY() + " ";
@@ -142,7 +150,9 @@ public class PhysicsSim extends JPanel implements ActionListener
       map = new MapForm(this);
       map.setBounds(0,0,super.getWidth(),super.getHeight());
       super.add(map);
-      super.setFocusable(true);
+      map.requestFocus();
+      map.t.restart();
+      map.enemyTimer.restart();
   }
   public int saveMap()
   {

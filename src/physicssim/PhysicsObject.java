@@ -29,7 +29,7 @@ public class PhysicsObject
     horizvelocity = v;
     direction = d%360;
     size = 45;
-    health = 10;
+    health = 100;
     drawn1 = true;
     drawn2 = false;
     invincible = false;
@@ -157,7 +157,7 @@ public class PhysicsObject
         }
         if(!r && !invincible){
           health-=10;
-          xLoc-=horizvelocity*2;
+          xLoc-=horizvelocity*5;
           invincible = true;
         }
         else if (invincible){}
