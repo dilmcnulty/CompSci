@@ -15,10 +15,10 @@ import java.util.ArrayList;
 public class PhysicsObject
 {
   protected double xLoc, yLoc, horizvelocity, vertvelocity,direction;
-  public boolean up, down, left, right, space, drawn, drawn1, drawn2,swordleft,swordright,locked;
+  public boolean up, down, left, right, space, drawn, drawn1, drawn2,swordleft,swordright,locked,isFast;
   private boolean invincible;
   public int size;
-  private int invinciblecounter, blinkcounter;
+  private int invinciblecounter, blinkcounter, powercounter;
   public int health;
   private Image link, link2, stableft, stabright;
 
@@ -35,6 +35,7 @@ public class PhysicsObject
     invincible = false;
     invinciblecounter = 0;
     locked = false;
+    isFast = false;
   }
   public double getX()
   {
@@ -123,6 +124,14 @@ public class PhysicsObject
           invincible = false;
           drawn1 = true;
       }
+      if (isFast && powercounter<280){
+          powercounter++;
+      }
+      else if (isFast && powercounter>=280){
+          isFast = false;
+          powercounter = 0;
+      }
+      if (!isFast) PhysicsSim.speed = 7;
     }
     else if (locked){
       horizvelocity = 0;
@@ -133,6 +142,7 @@ public class PhysicsObject
   public void checkCollision()
   {
     int removed = -1;
+    int premoved = -1;
     boolean r = false;
     for(Obstacle o: PhysicsSim.map.obstacleList){
       if (o.contains((int)(xLoc+horizvelocity),(int)(yLoc+vertvelocity),size,size)){
@@ -163,8 +173,26 @@ public class PhysicsObject
         else if (invincible){}
       }
     }
+    for (PowerUp p: PhysicsSim.map.puList){
+        if (p.contains((int)(xLoc+horizvelocity/2), (int)(yLoc+vertvelocity/2), size, size))
+        {
+            if(p.getType().equals("health")){
+                if (health>50) health = 100;
+                else if (health<50) health += 50;
+                premoved = PhysicsSim.map.puList.indexOf(p);
+            }
+            else if (p.getType().equals("speed")){
+                PhysicsSim.speed = 12;
+                isFast = true;
+                premoved = PhysicsSim.map.puList.indexOf(p);
+            }
+        }
+    }
     if (removed!=-1){
       PhysicsSim.map.enemyList.remove(removed);
+    }
+    if (premoved!=-1){
+        PhysicsSim.map.puList.remove(premoved);
     }
   }
 }

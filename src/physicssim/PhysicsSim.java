@@ -153,6 +153,7 @@ public class PhysicsSim extends JPanel implements ActionListener
       map.requestFocus();
       map.t.restart();
       map.enemyTimer.restart();
+      map.puTimer.restart();
   }
   public int saveMap()
   {

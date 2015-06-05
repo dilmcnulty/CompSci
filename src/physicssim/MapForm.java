@@ -31,10 +31,11 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
 {
   private Image background,rock;
   public static PhysicsObject link;
-  public Timer t,enemyTimer;
+  public Timer t,enemyTimer,puTimer;
   private boolean editing,paused;
   public static ArrayList<Obstacle> obstacleList;
   public static ArrayList<Enemy> enemyList;
+  public static ArrayList<PowerUp> puList;
   private int firstX, firstY;
   private Scanner in;
   private Button playAgain;
@@ -53,9 +54,12 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
     mapE.setBounds(10,10,84,20);
     editing = false;
     obstacleList = new ArrayList<Obstacle>();
+    puList = new ArrayList<PowerUp>();
     enemyList = new ArrayList<Enemy>();
     enemyTimer = new Timer(2000,this);
     enemyTimer.start();
+    puTimer = new Timer(5000,this);
+    puTimer.start();
     playAgain = new Button("Play Again?");
     playAgain.setFont(new Font("Arial",1,25));
     playAgain.setVisible(false);
@@ -92,6 +96,10 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
     {
       e.draw(g);
     }
+    for (PowerUp p: puList)
+    {
+      p.draw(g);
+    }
     link.draw(g);
     if (paused)
     {
@@ -121,10 +129,13 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
   {
     Random rng = new Random();
     link.update();
-        if (e.getSource() == enemyTimer){
-            System.out.println("enemy drawn");
-      enemyList.add(new Enemy(250,300,5,0));
-        }
+    if (e.getSource() == enemyTimer){
+        System.out.println("enemy drawn");
+        enemyList.add(new Enemy(250,300,5,0));
+    }
+    if (e.getSource() == puTimer){
+        puList.add(new PowerUp(20+rng.nextInt(750),20+rng.nextInt(550)));
+    }
     for (Enemy en: enemyList)
     {
       en.update();
@@ -133,6 +144,7 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
         gameOver = true;
         t.stop();
         enemyTimer.stop();
+        puTimer.stop();
     }
     if (e.getSource() == playAgain){
         gameOver = false;
