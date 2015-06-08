@@ -126,19 +126,26 @@ public class MapForm extends javax.swing.JPanel implements ActionListener, KeyLi
         playAgain.setVisible(true);
         playAgain.addActionListener(this);
     }
+    if (killCounter >= 10 && killCounter<30){
+        enemyTimer.setDelay(1500);
+    }
+    else if (killCounter >= 30 && killCounter <40){
+        enemyTimer.setDelay(1200);
+    }
+    else if (killCounter >= 40 && killCounter <50){
+        enemyTimer.setDelay(900);
+    }
+    else if (killCounter >=50){
+        enemyTimer.setDelay(600);
+    }
+    if (killCounter >= 15){
+        obstacleTimer.setDelay(20000);
+    }
   }
   @Override
   public void update(Graphics g)
   {
-    if (killCounter == 10){
-        enemyTimer.setDelay(1500);
-    }
-    if (killCounter == 15){
-        obstacleTimer.setDelay(20000);
-    }
-    if (killCounter == 30){
-        enemyTimer.setDelay(1000);
-    }
+
     this.paintComponent(g);
   }
   // Process GUI input in this method
