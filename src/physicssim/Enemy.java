@@ -59,8 +59,23 @@ public class Enemy extends PhysicsObject
   public void checkCollision()
   {
     for(Obstacle o: PhysicsSim.map.obstacleList){
-    if (o.contains((int)(xLoc+horizvelocity),(int)(yLoc+vertvelocity),size,size)){
-      horizvelocity = -1*horizvelocity;
+    if (o.contains((int)(xLoc+horizvelocity),(int)(yLoc),size,size)){
+      direction+=180;
+      if (xLoc+size < o.getX()){
+          xLoc = o.getX()-25;
+      }
+      else if (xLoc > o.getX() + o.getWidth()){
+          xLoc = o.getX()+o.getWidth()+10;
+      }
+    }
+    if (o.contains((int)(xLoc),(int)(yLoc+vertvelocity),size,size)){
+      direction+=180;
+      if (yLoc<o.getY()){
+          yLoc = o.getY()-10;
+      }
+      else if (yLoc>o.getY()+o.getHeight()){
+          yLoc = o.getY()+o.getHeight()+10;
+      }
     }
     }
   }

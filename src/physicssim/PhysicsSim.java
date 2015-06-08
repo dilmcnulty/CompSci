@@ -121,8 +121,8 @@ public class PhysicsSim extends JPanel implements ActionListener
         map = new MapForm(this);
         map.setBounds(0,0,super.getWidth(),super.getHeight());
         super.add(map);
-        loadMap();
         map.pauseGame();
+        loadMap();
         /*try{
             Scanner in = new Scanner(new FileReader("C:\\Users\\Kingdom Ent-Dave\\Documents\\NetBeansProjects\\PhysicsSim\\src\\physicssim\\map1.txt"));
         }
@@ -154,6 +154,7 @@ public class PhysicsSim extends JPanel implements ActionListener
       map.t.restart();
       map.enemyTimer.restart();
       map.puTimer.restart();
+      map.obstacleTimer.restart();
   }
   public int saveMap()
   {

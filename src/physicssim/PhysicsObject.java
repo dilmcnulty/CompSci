@@ -190,6 +190,7 @@ public class PhysicsObject
     }
     if (removed!=-1){
       PhysicsSim.map.enemyList.remove(removed);
+      PhysicsSim.map.killCounter++;
     }
     if (premoved!=-1){
         PhysicsSim.map.puList.remove(premoved);
